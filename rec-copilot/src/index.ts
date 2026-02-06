@@ -30,6 +30,19 @@ export default {
 						headers: { 'Content-Type': 'application/json' }
 					}
 				);
+
+			case 'GET /db-test':
+				const result = await env.REC_COPILOT_DB.prepare('SELECT 1 as test').first();
+				return new Response(
+					JSON.stringify({
+						message: 'database connected',
+						result
+					}),
+					{
+						status: 200,
+						headers: { 'Content-Type': 'application/json' }
+					}
+				);
 			default:
 				return new Response(
 					JSON.stringify({

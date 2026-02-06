@@ -9,7 +9,24 @@
 	"compatibility_date": "2026-01-31",
 	"observability": {
 		"enabled": true
-	}
+	},
+	"d1_databases": [
+		{
+			"binding": "REC_COPILOT_DB",
+			"database_name": "rec-copilot-db",
+			"database_id": "daaa1ec7-bc51-4caf-9213-193e6fa836dc"
+		}
+	],
+	"durable_objects": {
+		"bindings": [{
+			"name": "SITE_DO",
+			"class_name": "SiteDO"
+		}]
+	},
+	"migrations": [{
+		"tag": "v1",
+		"new_classes": ["SiteDO"]
+	}]
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
