@@ -11,6 +11,10 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+export { SiteWorkFlow } from "./infrastructure/orchestration/workflows/site_workflow";
+export { SiteDO } from "./infrastructure/orchestration/durable-objects/SitesDO";
+
+
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
 
@@ -43,6 +47,22 @@ export default {
 						headers: { 'Content-Type': 'application/json' }
 					}
 				);
+			case 'POST /workflow/test':
+				const instance = await env.SITE_WORKFLOW.create({
+					params: { site_id: "demo-site" },
+				})
+
+				return new Response(
+					JSON.stringify({
+						message: "workflow created",
+						instance_id: instance.id
+					}),
+					{
+						status: 201,
+						headers: { 'Content-Type': 'application/json' }
+					}
+				);
+
 			default:
 				return new Response(
 					JSON.stringify({
