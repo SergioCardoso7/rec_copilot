@@ -11,7 +11,8 @@ declare namespace Cloudflare {
 		AI: Ai;
 		SITE_DO: DurableObjectNamespace /* SiteDO */;
 		SITE_WORKFLOW: Workflow<Parameters<import("./src/index").SiteWorkFlow['run']>[0]['payload']>;
-	}
+        ENVIRONMENT?: string; 
+    }
 }
 interface Env extends Cloudflare.Env {}
 
