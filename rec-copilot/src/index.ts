@@ -17,6 +17,7 @@ import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
 import { secureHeaders } from 'hono/secure-headers';
 import { handleCreateSite, handleGetSite } from './interfaces/http/sites.controller';
+import { handleGetDoState, handleGetHistory, handleWebSocketUpgrade } from './interfaces/http/chat.controller';
 
 export { SiteWorkFlow } from "./infrastructure/orchestration/workflows/site_workflow";
 export { SiteDO } from "./infrastructure/orchestration/durable-objects/SitesDO";
@@ -61,6 +62,15 @@ app.get('/db-test', async (c) => {
 
 app.post('/sites', handleCreateSite);
 app.get('/sites/:site_id', handleGetSite);
+
+
+// ---------------------------------------------
+// Chat - WebSocket
+// ---------------------------------------------
+
+app.get('/sites/:site_id/ws', handleWebSocketUpgrade);
+app.get('/sites/:site_id/history', handleGetHistory);
+app.get('/sites/:site_id/state', handleGetDoState);
 
 app.post('/workflow/test', async (c) => {
 	try {

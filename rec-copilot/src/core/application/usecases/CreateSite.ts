@@ -45,7 +45,7 @@ export class CreateSite {
                 site_id,
                 name,
                 timezone,
-                active_constraints_json: null,
+                active_constraints_json: "",
             });
 
             return { success: true, data: created };
