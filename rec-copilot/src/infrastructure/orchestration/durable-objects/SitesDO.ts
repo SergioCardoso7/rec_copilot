@@ -24,6 +24,8 @@ export class SiteDO {
 
     private lastActivity: string | null = null;
 
+    //private siteId: string | null = null;
+
     constructor(state: DurableObjectState, env: Env) {
         this.state = state;
         this.env = env;
@@ -33,6 +35,13 @@ export class SiteDO {
     async fetch(request: Request): Promise<Response> {
 
         const url = new URL(request.url);
+
+        const pathParts = url.pathname.split("/");
+        const siteIdFromPath = pathParts[2];
+        if (siteIdFromPath) {
+            await this.state.storage.put("siteId", siteIdFromPath);
+        }
+        //this.siteId = siteIdFromPath;
 
         if (url.pathname.endsWith("/ws")) {
             return this.handleWebSocketUpgrade(request);
@@ -120,7 +129,13 @@ export class SiteDO {
             return;
         }
 
-        const siteId = this.state.id.toString();
+        const siteId = await this.state.storage.get<string>("siteId");
+
+        if (!siteId) {
+            ws.send(JSON.stringify({ type: "error", content: "Site ID not initialized" }));
+            return;
+        }
+
         const repo = new D1MessageRepo(this.env.REC_COPILOT_DB);
 
         try {
@@ -195,7 +210,8 @@ export class SiteDO {
     private async handleHistory(): Promise<Response> {
         try {
             const repo = new D1MessageRepo(this.env.REC_COPILOT_DB);
-            const messages = await repo.getBySiteId(this.state.id.toString());
+            const siteId = await this.state.storage.get<string>("siteId");
+            const messages = await repo.getBySiteId(siteId!);
             return this.json({ messages });
         } catch (error) {
             console.error("Failed to fetch history:", error);

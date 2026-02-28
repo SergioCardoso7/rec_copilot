@@ -9,7 +9,11 @@ export async function handleWebSocketUpgrade(c: Context<{ Bindings: Env }>): Pro
 
     const id = c.env.SITE_DO.idFromName(siteId);
     const stub = c.env.SITE_DO.get(id);
-    return stub.fetch(c.req.raw);
+
+    const url = new URL(c.req.url);
+    url.pathname = `/sites/${siteId}/ws`;
+
+    return stub.fetch(new Request(url.toString()), c.req.raw);
 }
 
 export async function handleGetHistory(c: Context<{ Bindings: Env }>): Promise<Response> {
